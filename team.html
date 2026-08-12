@@ -2,10 +2,10 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Inschrijven Team - Respawn: 6H van Zandvoort voor 3FM Serious Request</title>
+    <title>Inschrijven Team - Respawn: 6H van Zandvoort</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
         button { background-color: #28a745; color: white; padding: 15px; border: none; width: 100%; cursor: pointer; margin-top: 20px; }
         h3 { margin-top: 25px; border-bottom: 1px solid #ccc; }
     </style>
@@ -22,22 +22,23 @@
 
         <label>Auto</label>
         <select name="auto" required>
-        <option value="Auto 1">Auto 1</option>
-        <option value="Auto 2">Auto 2</option>
-        <option value="Auto 3">Auto 3</option>
-     <option value="Auto 4">Auto 4</option>
-    <option value="Auto 5">Auto 5</option>
-    <option value="Auto 6">Auto 6</option>
-</select>
-
-<label>Livery URL (Optioneel, mag ook later)</label>
-<input type="text" name="livery_url" placeholder="Link naar je .zip of .dds bestand">
+            <option value="">-- Kies je auto --</option>
+            <option value="Auto 1">Auto 1</option>
+            <option value="Auto 2">Auto 2</option>
+            <option value="Auto 3">Auto 3</option>
+            <option value="Auto 4">Auto 4</option>
+            <option value="Auto 5">Auto 5</option>
+            <option value="Auto 6">Option 6</option>
+        </select>
         
         <label>Contactpersoon (Naam)</label>
         <input type="text" name="contactpersoon" required>
-        
-        <label>E-mailadres</label>
-        <input type="email" name="email" required>
+
+        <label>Team Logo (PNG of JPG)</label>
+        <input type="file" id="logoFile" accept="image/png, image/jpeg">
+
+        <label>Livery URL (Optioneel, DDS/ZIP via externe link)</label>
+        <input type="text" name="livery_url" placeholder="Optioneel">
 
         <h3>Coureur 1 (Verplicht)</h3>
         <input type="text" name="coureur1_naam" placeholder="Voornaam Achternaam" required>
@@ -58,32 +59,64 @@
     </form>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbz7MYKhuCysEKT666tz0OebpTXp2immMKvFavuH_2B0g0JKFZt2NafWDk7qIKoW5122PA/exec'; // <-- Vergeet niet je URL hier weer in te vullen!
-        const form = document.getElementById('inschrijfForm');
+        const scriptURL = 'HIER_JE_WEB_APP_URL_PLAKKEN';
 
-        form.addEventListener('submit', e => {
+        document.getElementById('inschrijfForm').addEventListener('submit', e => {
             e.preventDefault();
-            document.getElementById('submitBtn').innerText = 'Versturen...';
-            
-            fetch(scriptURL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(form))) })
-                // Vervang je .then() blok in team.html door dit:
-.then(response => response.json())
-.then(data => {
-    document.body.innerHTML = `
-        <div style="text-align: center; margin-top: 50px;">
-            <h1>Bedankt voor je aanmelding!</h1>
-            <p>Je aanmelding is ontvangen onder code: <strong>${data.betaalcode}</strong></p>
-            <p>Wij moedigen jullie aan een bijdrage te doen op deze pagina om de actie te steunen:</p>
-            <a href="URL_NAAR_KOM_IN_ACTIE" target="_blank">Klik hier om te doneren</a>
-            <p>Vergeet niet de <a href="DISCORD_LINK" target="https://discord.gg/fsGMUMXa4q">Discord van Respawn Racing</a> te joinen.</p>
-            <hr>
-            <p>De kwalificatie is op 19 december.</p>
-            <p>De race start op zondag 20 december 2026 om 14:00.</p>
-        </div>
-    `;
-})
-                .catch(error => alert('Er ging iets mis.'));
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = 'Versturen... (even geduld)';
+            btn.disabled = true;
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const fileInput = document.getElementById('logoFile');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    data.logoData = reader.result.split(',')[1]; // De base64 data
+                    data.logoName = file.name;
+                    sendData(data);
+                };
+            } else {
+                data.logoData = "";
+                data.logoName = "";
+                sendData(data);
+            }
         });
+
+        function sendData(data) {
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) })
+                .then(response => response.json())
+                .then(res => {
+                    if(res.result === "success") {
+                        document.body.innerHTML = `
+                            <div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
+                                <h1>Bedankt voor je aanmelding!</h1>
+                                <p>Je aanmelding is ontvangen onder code: <strong>${res.betaalcode}</strong></p>
+                                <p>Wij moedigen jullie aan een bijdrage te doen op deze pagina om de actie te steunen:</p>
+                                <p><a href="https://www.kominactie.nl" target="_blank" style="font-size: 18px; color: #28a745;">Klik hier om te doneren</a></p>
+                                <p>Vergeet niet de <a href="https://discord.gg/fsGMUMXa4q" target="_blank">Discord van Respawn Racing</a> te joinen.</p>
+                                <hr style="max-width: 400px; margin: 20px auto;">
+                                <p>De kwalificatie is op 19 december.</p>
+                                <p>De race start op zondag 20 december 2026 om 14:00.</p>
+                            </div>
+                        `;
+                    } else {
+                        alert('Fout: ' + res.message);
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    alert('Er ging iets mis bij het versturen.');
+                    location.reload();
+                });
+        }
     </script>
+</body>
+</html>
 </body>
 </html>
