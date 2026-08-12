@@ -19,6 +19,19 @@
         
         <label>Racenummer</label>
         <input type="number" name="racenummer" required>
+
+        <label>Auto</label>
+        <select name="auto" required>
+        <option value="Auto 1">Auto 1</option>
+        <option value="Auto 2">Auto 2</option>
+        <option value="Auto 3">Auto 3</option>
+     <option value="Auto 4">Auto 4</option>
+    <option value="Auto 5">Auto 5</option>
+    <option value="Auto 6">Auto 6</option>
+</select>
+
+<label>Livery URL (Optioneel, mag ook later)</label>
+<input type="text" name="livery_url" placeholder="Link naar je .zip of .dds bestand">
         
         <label>Contactpersoon (Naam)</label>
         <input type="text" name="contactpersoon" required>
@@ -45,7 +58,7 @@
     </form>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzVBhdyyabHsWE-bMDcv09LYOtGkDQ8D-Pe75couo6HUB-gZhdJG1qpy1arZMFMg5fuww/exec'; // <-- Vergeet niet je URL hier weer in te vullen!
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz7MYKhuCysEKT666tz0OebpTXp2immMKvFavuH_2B0g0JKFZt2NafWDk7qIKoW5122PA/exec'; // <-- Vergeet niet je URL hier weer in te vullen!
         const form = document.getElementById('inschrijfForm');
 
         form.addEventListener('submit', e => {
@@ -53,11 +66,22 @@
             document.getElementById('submitBtn').innerText = 'Versturen...';
             
             fetch(scriptURL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(form))) })
-                .then(response => {
-                    alert('Bedankt! Je aanmelding is verzonden.');
-                    form.reset();
-                    document.getElementById('submitBtn').innerText = 'AANVRAAG VERSTUREN';
-                })
+                // Vervang je .then() blok in team.html door dit:
+.then(response => response.json())
+.then(data => {
+    document.body.innerHTML = `
+        <div style="text-align: center; margin-top: 50px;">
+            <h1>Bedankt voor je aanmelding!</h1>
+            <p>Je aanmelding is ontvangen onder code: <strong>${data.betaalcode}</strong></p>
+            <p>Wij moedigen jullie aan een bijdrage te doen op deze pagina om de actie te steunen:</p>
+            <a href="URL_NAAR_KOM_IN_ACTIE" target="_blank">Klik hier om te doneren</a>
+            <p>Vergeet niet de <a href="DISCORD_LINK" target="https://discord.gg/fsGMUMXa4q">Discord van Respawn Racing</a> te joinen.</p>
+            <hr>
+            <p>De kwalificatie is op 19 december.</p>
+            <p>De race start op zondag 20 december 2026 om 14:00.</p>
+        </div>
+    `;
+})
                 .catch(error => alert('Er ging iets mis.'));
         });
     </script>
