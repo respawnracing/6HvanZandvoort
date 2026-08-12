@@ -12,7 +12,7 @@
 <body>
 
     <h1>Team Inschrijfformulier</h1>
-    <form>
+    <form id="inschrijfForm">
         <label>Teamnaam</label>
         <input type="text" name="teamnaam" required>
         
@@ -35,8 +35,25 @@
         <label>Coureur 3 (Optioneel)</label>
         <input type="text" name="coureur3">
 
-        <button type="submit">AANVRAAG VERSTUREN</button>
+        <button type="submit" id="submitBtn">AANVRAAG VERSTUREN</button>
     </form>
 
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz4cJlrf2bt5Kbik4Vh15R3dMhVAbvHtWZuH8QskyXMMHg96QZi6-oPuH1AkJwjEjA81g/exec'; // <-- HIER MOET JOUW URL KOMEN
+        const form = document.getElementById('inschrijfForm');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            document.getElementById('submitBtn').innerText = 'Versturen...';
+            
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(form))) })
+                .then(response => {
+                    alert('Bedankt! Je aanmelding is verzonden.');
+                    form.reset();
+                    document.getElementById('submitBtn').innerText = 'AANVRAAG VERSTUREN';
+                })
+                .catch(error => alert('Er ging iets mis, probeer het later nog eens.'));
+        });
+    </script>
 </body>
 </html>
