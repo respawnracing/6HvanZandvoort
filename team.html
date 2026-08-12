@@ -190,12 +190,12 @@
             <label>Contactpersoon (Naam) *</label>
             <input type="text" name="contactpersoon" required placeholder="Voornaam Achternaam">
 
-            <label>Team Logo URL (Optioneel)</label>
-            <input type="text" name="logo_url" placeholder="Link naar je logo (Imgur, Discord, etc.)">
-            <div class="note">Upload je logo online en plak de directe link hier.</div>
+            <label>Team Logo (PNG of JPG)</label>
+            <input type="file" id="logoFile" accept="image/png, image/jpeg">
+            <div class="note">Kies een afbeelding van je computer.</div>
 
-            <label>Livery URL (Optioneel)</label>
-            <input type="text" name="livery_url" placeholder="Link naar .zip of .dds bestand">
+            <label>Livery Bestand (.zip of .dds - Optioneel)</label>
+            <input type="file" id="liveryFile" accept=".zip,.dds">
             <div class="note">Mag ook later worden aangeleverd.</div>
 
             <h3>Coureur 1 (Verplicht)</h3>
@@ -219,7 +219,7 @@
 
     <script>
         // PLAATS HIER JOUW GOOGLE WEB-APP URL TUSSEN DE HAKEN
-        const scriptURL = 'HIER_JE_WEB_APP_URL_PLAKKEN';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzK0_qgabZGWHO8Mk5i1lNsN-cAfD9cICHZjpkxfz3gRp1UYuejoL0eznR_71whqO4X/exec';
 
         document.getElementById('inschrijfForm').addEventListener('submit', e => {
             e.preventDefault();
