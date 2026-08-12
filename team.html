@@ -10,8 +10,7 @@
         * { box-sizing: border-box; }
         body {
             font-family: 'Montserrat', sans-serif;
-            /* ACHTERGRONDAFBEELDING: Vervang de URL hieronder met je Assetto Corsa screenshot */
-            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.85)), url('HIER_URL_VAN_JE_ASSETTO_CORSA_SCREENSHOT') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.85)), #121212;
             background-size: cover;
             color: #ffffff;
             margin: 0;
@@ -19,7 +18,7 @@
             min-height: 100vh;
         }
 
-        /* HEADER MET 3 LOGO'S */
+        /* HEADER MET LOGO'S */
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -30,14 +29,19 @@
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
         .header-container img {
-            max-height: 50px;
+            max-height: 45px;
             object-fit: contain;
         }
-        .logo-left { width: 120px; text-align: left; }
-        .logo-center { width: 150px; text-align: center; }
-        .logo-right { width: 120px; text-align: right; }
+        .logo-left, .logo-right, .logo-center {
+            font-weight: 900;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .logo-center { color: #e60012; text-align: center; }
 
-        /* HOOFDFORMULIER CONTAINER (GLASMORPHISM / PRO LOOK) */
+        /* HOOFDFORMULIER CONTAINER */
         .form-wrapper {
             max-width: 750px;
             margin: 0 auto;
@@ -138,38 +142,29 @@
             background: linear-gradient(135deg, #ff1a2b 0%, #cc0010 100%);
         }
 
-        /* RESPONSIVE DESIGN VOOR MOBIEL */
         @media(max-width: 600px) {
             body { padding: 10px; }
             .form-wrapper { padding: 20px; }
-            .header-container img { max-height: 35px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOP BAR MET 3 LOGO'S -->
+    <!-- TOP BAR MET LOGO'S -->
     <div class="header-container">
-        <!-- 1. Linksboven: Respawn Racing Logo -->
-        <div class="logo-left">
-            <img src="HIER_URL_RESPAWN_LOGO" alt="Respawn Racing">
-        </div>
-        <!-- 2. Midden boven: 6H van Zandvoort Logo -->
-        <div class="logo-center">
-            <img src="HIER_URL_6H_ZANDVOORT_LOGO" alt="6H van Zandvoort">
-        </div>
-        <!-- 3. Rechtboven: 3FM Serious Request Logo -->
+        <div class="logo-left">Respawn Racing</div>
+        <div class="logo-center">6H van Zandvoort</div>
         <div class="logo-right">
             <img src="https://cms-assets.nporadio.nl/npo3fm/SR25VORMGEVING/3FM_SR_PUBLIEKSLOGO_WIJ_STEUNEN_MONO_WHITE.png?v=1749577974" alt="3FM Serious Request">
         </div>
     </div>
 
-    <!-- HET FORMULIER -->
+    <!-- HET FORMULIER (Gekoppeld aan verborgen iframe om CORS-fouten te voorkomen) -->
     <div class="form-wrapper">
         <h1>Team Inschrijving</h1>
         <div class="subtitle">Respawn: 6H van Zandvoort voor 3FM Serious Request</div>
         
-        <form id="inschrijfForm">
+        <form id="inschrijfForm" action="https://script.google.com/macros/s/AKfycbweAr9rLtochGJ3-XPBPZ5_x597n_oULF-ql7HmeAQ63Xr6cHluuHK4qmHvYt6Qw1xJBA/exec" method="POST" target="hidden_iframe" onsubmit="bevestigVerzenden()">
             <label>Teamnaam *</label>
             <input type="text" name="teamnaam" required placeholder="Bijv. Respawn Racing Team">
             
@@ -190,12 +185,12 @@
             <label>Contactpersoon (Naam) *</label>
             <input type="text" name="contactpersoon" required placeholder="Voornaam Achternaam">
 
-            <label>Team Logo (PNG of JPG)</label>
-            <input type="file" id="logoFile" accept="image/png, image/jpeg">
-            <div class="note">Kies een afbeelding van je computer.</div>
+            <label>Team Logo (Bestandsnaam / Info)</label>
+            <input type="text" name="logo_info" placeholder="Bijv. logo.png (of laat leeg)">
+            <div class="note">Naam van je logo-bestand.</div>
 
-            <label>Livery Bestand (.zip of .dds - Optioneel)</label>
-            <input type="file" id="liveryFile" accept=".zip,.dds">
+            <label>Livery Bestand (Info)</label>
+            <input type="text" name="livery_info" placeholder="Bijv. livery.zip (of laat leeg)">
             <div class="note">Mag ook later worden aangeleverd.</div>
 
             <h3>Coureur 1 (Verplicht)</h3>
@@ -217,68 +212,37 @@
         </form>
     </div>
 
-    <script>
-        // PLAATS HIER JOUW GOOGLE WEB-APP URL TUSSEN DE HAKEN
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbweAr9rLtochGJ3-XPBPZ5_x597n_oULF-ql7HmeAQ63Xr6cHluuHK4qmHvYt6Qw1xJBA/exec';
+    <!-- Verborgen iframe zodat de pagina niet verspringt en de data netjes aankomt -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="toonBedanktScherm()"></iframe>
 
-        document.getElementById('inschrijfForm').addEventListener('submit', e => {
-            e.preventDefault();
+    <script>
+        let isSubmitted = false;
+
+        function bevestigVerzenden() {
+            isSubmitted = true;
             const btn = document.getElementById('submitBtn');
             btn.innerText = 'Versturen...';
             btn.disabled = true;
+        }
 
-            const form = e.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-
-            // Pak de bestandsnamen indien geselecteerd
-            const logoInput = document.getElementById('logoFile');
-            if (logoInput && logoInput.files.length > 0) {
-                data.logo_info = logoInput.files[0].name;
-            } else {
-                data.logo_info = "Niet aangeleverd";
+        function toonBedanktScherm() {
+            if (isSubmitted) {
+                document.body.innerHTML = `
+                    <div style="text-align: center; margin-top: 80px; font-family: 'Montserrat', sans-serif; color: #fff; padding: 20px;">
+                        <h1 style="color: #28a745; font-size: 32px; font-style: italic;">BEDANKT VOOR JE AANMELDING!</h1>
+                        <p style="font-size: 16px; margin: 20px 0; color: #ccc;">Voor Respawn: 6 uur van Zandvoort voor 3FM Serious Request.</p>
+                        <p style="background: rgba(20,20,20,0.9); display: inline-block; padding: 20px 40px; border-radius: 12px; border: 1px solid #333; font-size: 18px; margin-top: 10px;">
+                            Jouw inschrijving is succesvol verzonden naar de server!
+                        </p>
+                        <p style="margin-top: 35px; color: #ccc;">Wij moedigen jullie aan een bijdrage te doen op deze pagina om de actie te steunen:</p>
+                        <p><a href="https://www.kominactie.nl" target="_blank" style="font-size: 18px; color: #4da6ff; text-decoration: none; font-weight: bold; background: rgba(77,166,255,0.1); padding: 10px 20px; border-radius: 6px; display: inline-block; border: 1px solid rgba(77,166,255,0.3);">👉 Klik hier om te doneren via Kom in Actie</a></p>
+                        <p style="margin-top: 30px; color: #ccc;">Vergeet niet de Discord van Respawn Racing te joinen:<br><a href="https://discord.gg/jouwlink" target="_blank" style="color: #ff3333; font-weight: bold; text-decoration: none;">Discord Server Link</a></p>
+                        <hr style="max-width: 400px; margin: 40px auto; border-color: #333;">
+                        <p style="color: #888; font-size: 14px;">De kwalificatie is op 19 december.<br>De race start op zondag 20 december 2026 om 14:00.</p>
+                    </div>
+                `;
             }
-
-            const liveryInput = document.getElementById('liveryFile');
-            if (liveryInput && liveryInput.files.length > 0) {
-                data.livery_info = liveryInput.files[0].name;
-            } else {
-                data.livery_info = "Niet aangeleverd";
-            }
-
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: JSON.stringify(data) 
-            })
-            .then(response => response.json())
-            .then(res => {
-                if(res.result === "success") {
-                    document.body.innerHTML = `
-                        <div style="text-align: center; margin-top: 80px; font-family: 'Montserrat', sans-serif; color: #fff; padding: 20px;">
-                            <h1 style="color: #28a745; font-size: 32px; font-style: italic;">BEDANKT VOOR JE AANMELDING!</h1>
-                            <p style="font-size: 16px; margin: 20px 0; color: #ccc;">Voor Respawn: 6 uur van Zandvoort voor 3FM Serious Request.</p>
-                            <p style="background: rgba(20,20,20,0.9); display: inline-block; padding: 20px 40px; border-radius: 12px; border: 1px solid #333; font-size: 18px; margin-top: 10px;">
-                                Jouw unieke registratiecode: <br><strong style="color: #ff3333; font-size: 26px; display: block; margin-top: 5px;">${res.betaalcode}</strong>
-                            </p>
-                            <p style="margin-top: 35px; color: #ccc;">Wij moedigen jullie aan een bijdrage te doen op deze pagina om de actie te steunen:</p>
-                            <p><a href="https://www.kominactie.nl" target="_blank" style="font-size: 18px; color: #4da6ff; text-decoration: none; font-weight: bold; background: rgba(77,166,255,0.1); padding: 10px 20px; border-radius: 6px; display: inline-block; border: 1px solid rgba(77,166,255,0.3);">👉 Klik hier om te doneren via Kom in Actie</a></p>
-                            <p style="margin-top: 30px; color: #ccc;">Vergeet niet de Discord van Respawn Racing te joinen:<br><a href="https://discord.gg/jouwlink" target="_blank" style="color: #ff3333; font-weight: bold; text-decoration: none;">Discord Server Link</a></p>
-                            <hr style="max-width: 400px; margin: 40px auto; border-color: #333;">
-                            <p style="color: #888; font-size: 14px;">De kwalificatie is op 19 december.<br>De race start op zondag 20 december 2026 om 14:00.</p>
-                        </div>
-                    `;
-                } else {
-                    alert('Fout bij verzenden: ' + res.message);
-                    btn.innerText = 'AANVRAAG VERSTUREN';
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                alert('Er ging iets mis bij de verbinding met de server.');
-                btn.innerText = 'AANVRAAG VERSTUREN';
-                btn.disabled = false;
-            });
-        });
+        }
     </script>
 </body>
 </html>
