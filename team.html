@@ -5,8 +5,8 @@
     <title>Inschrijven Team - 6H Race</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; }
-        button { background-color: #28a745; color: white; padding: 15px; border: none; width: 100%; cursor: pointer; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background-color: #28a745; color: white; padding: 15px; border: none; width: 100%; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -14,16 +14,26 @@
     <h1>Team Inschrijfformulier</h1>
     <form>
         <label>Teamnaam</label>
-        <input type="text" required>
+        <input type="text" name="teamnaam" required>
         
         <label>Racenummer</label>
-        <input type="number" required>
+        <input type="number" name="racenummer" required>
         
         <label>Contactpersoon (Naam)</label>
-        <input type="text" required>
+        <input type="text" name="contactpersoon" required>
         
         <label>E-mailadres</label>
-        <input type="email" required>
+        <input type="email" name="email" required>
+
+        <h3>Coureurs</h3>
+        <label>Coureur 1 (Verplicht)</label>
+        <input type="text" name="coureur1" required>
+        
+        <label>Coureur 2 (Verplicht)</label>
+        <input type="text" name="coureur2" required>
+        
+        <label>Coureur 3 (Optioneel)</label>
+        <input type="text" name="coureur3">
 
         <button type="submit">AANVRAAG VERSTUREN</button>
     </form>
