@@ -231,6 +231,21 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            // Pak de bestandsnamen indien geselecteerd
+            const logoInput = document.getElementById('logoFile');
+            if (logoInput && logoInput.files.length > 0) {
+                data.logo_info = logoInput.files[0].name;
+            } else {
+                data.logo_info = "Niet aangeleverd";
+            }
+
+            const liveryInput = document.getElementById('liveryFile');
+            if (liveryInput && liveryInput.files.length > 0) {
+                data.livery_info = liveryInput.files[0].name;
+            } else {
+                data.livery_info = "Niet aangeleverd";
+            }
+
             fetch(scriptURL, { 
                 method: 'POST', 
                 body: JSON.stringify(data) 
