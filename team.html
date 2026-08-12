@@ -2,11 +2,12 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Inschrijven Team - 6H Race</title>
+    <title>Inschrijven Team - Respawn: 6H van Zandvoort voor 3FM Serious Request</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
         input { width: 100%; padding: 10px; margin: 10px 0; }
         button { background-color: #28a745; color: white; padding: 15px; border: none; width: 100%; cursor: pointer; margin-top: 20px; }
+        h3 { margin-top: 25px; border-bottom: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -25,21 +26,26 @@
         <label>E-mailadres</label>
         <input type="email" name="email" required>
 
-       <h3>Coureur 1</h3>
-<input type="text" name="coureur1_naam" placeholder="Voornaam Achternaam" required>
-<input type="text" name="coureur1_steam" placeholder="Steam ID">
-<input type="text" name="coureur1_discord" placeholder="Discordnaam">
+        <h3>Coureur 1 (Verplicht)</h3>
+        <input type="text" name="coureur1_naam" placeholder="Voornaam Achternaam" required>
+        <input type="text" name="coureur1_steam" placeholder="Steam ID">
+        <input type="text" name="coureur1_discord" placeholder="Discordnaam">
 
-<h3>Coureur 2</h3>
-<input type="text" name="coureur2_naam" placeholder="Voornaam Achternaam" required>
-<input type="text" name="coureur2_steam" placeholder="Steam ID">
-<input type="text" name="coureur2_discord" placeholder="Discordnaam">
+        <h3>Coureur 2 (Verplicht)</h3>
+        <input type="text" name="coureur2_naam" placeholder="Voornaam Achternaam" required>
+        <input type="text" name="coureur2_steam" placeholder="Steam ID">
+        <input type="text" name="coureur2_discord" placeholder="Discordnaam">
+
+        <h3>Coureur 3 (Optioneel)</h3>
+        <input type="text" name="coureur3_naam" placeholder="Voornaam Achternaam">
+        <input type="text" name="coureur3_steam" placeholder="Steam ID">
+        <input type="text" name="coureur3_discord" placeholder="Discordnaam">
 
         <button type="submit" id="submitBtn">AANVRAAG VERSTUREN</button>
     </form>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbz4cJlrf2bt5Kbik4Vh15R3dMhVAbvHtWZuH8QskyXMMHg96QZi6-oPuH1AkJwjEjA81g/exec'; // <-- HIER MOET JOUW URL KOMEN
+        const scriptURL = 'HIER_JE_URL_PLAKKEN'; // <-- Vergeet niet je URL hier weer in te vullen!
         const form = document.getElementById('inschrijfForm');
 
         form.addEventListener('submit', e => {
@@ -52,7 +58,7 @@
                     form.reset();
                     document.getElementById('submitBtn').innerText = 'AANVRAAG VERSTUREN';
                 })
-                .catch(error => alert('Er ging iets mis, probeer het later nog eens.'));
+                .catch(error => alert('Er ging iets mis.'));
         });
     </script>
 </body>
